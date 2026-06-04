@@ -39,7 +39,7 @@ async function getAddressFromCoords(lat, lng) {
     return;
   } catch (err) {
     showError.value = true;
-    errorMessage.value = err.message;
+    errorMessage.value = "Функция временно недоступна. Сбой в работе сторонних сервисов";
     title.value = 'Ошибка геокодирования';
 
     return;
