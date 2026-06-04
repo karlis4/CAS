@@ -25,11 +25,11 @@ class CustomVerifyEmail extends Notification
 
         // Извлекаем путь и параметры
         $parsedUrl = parse_url($verificationUrl);
-        $path = $parsedUrl['path']; 
-        $query = $parsedUrl['query']; 
+        $path = $parsedUrl['path'];
+        $query = $parsedUrl['query'];
 
         // Собираем ссылку для фронтенда
-        $frontendUrl = env('FRONTEND_URL', 'http://localhost:8080');
+        $frontendUrl = env('FRONTEND_URL', 'http://109.196.164.135');
         $url = $frontendUrl . $path . '?' . $query;
 
         return (new MailMessage)
