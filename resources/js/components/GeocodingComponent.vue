@@ -35,8 +35,6 @@ async function getAddressFromCoords(lat, lng) {
     showError.value = true;
     errorMessage.value = 'Адрес не найден';
     title.value = 'Ошибка геокодирования';
-
-    return;
   } catch (err) {
     showError.value = true;
     errorMessage.value = "Функция временно недоступна. Сбой в работе сторонних сервисов";

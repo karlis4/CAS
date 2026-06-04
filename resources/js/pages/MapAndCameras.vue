@@ -12,6 +12,16 @@ import Logout from '../components/Logout.vue';
 import ExcelRustService from '../components/ExcelRustService.vue';
 import router from '../router';
 
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: new URL('leaflet/dist/images/marker-icon-2x.png', import.meta.url).href,
+    iconUrl: new URL('leaflet/dist/images/marker-icon.png', import.meta.url).href,
+    shadowUrl: new URL('leaflet/dist/images/marker-shadow.png', import.meta.url).href,
+});
+
 const mapContainer = ref(null);
 const map = ref(null);
 const store = useMarkersStore();
@@ -49,38 +59,16 @@ let createdMarker = reactive({
 });
 
 onMounted(() => {
-    loadLeaflet();
+    initMap();
+    initMarkers();
 })
 
 onUnmounted(() => {
     cleanup()
 })
 
-function loadLeaflet() {
-    if (window.L) {
-        initMap();
-        initMarkers();
-        return
-    }
-
-    const link = document.createElement('link')
-    link.rel = 'stylesheet'
-    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
-    document.head.appendChild(link)
-
-    const script = document.createElement('script')
-    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
-    script.onload = () => {
-        initMap();
-        initMarkers();
-    }
-    document.head.appendChild(script)
-}
-
 function initMap() {
     try {
-        const L = window.L
-
         map.value = L.map(mapContainer.value).setView([45.0428, 41.9734], 13)
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -105,7 +93,6 @@ function initMap() {
 }
 
 async function initMarkers() {
-    const L = window.L
     showOpacityWindow.value = true;
     showLoader.value = true;
 
@@ -172,7 +159,6 @@ async function initMarkers() {
 }
 
 async function addMarker() {
-    const L = window.L;
     showOpacityWindow.value = true;
     showLoader.value = true;
 
@@ -764,8 +750,6 @@ ul li {
     margin-top: 30px;
     font-size: 16px;
 }
-
-/* масштабирование */
 
 .slide-fade-enter-active {
     transition: all 0.3s ease;
