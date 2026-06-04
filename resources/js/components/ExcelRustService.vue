@@ -103,10 +103,9 @@ if (!fileName.value.trim() || fileName.value.trim().includes(' ')) {
     });
 
     if(response.data.success){
-        message.value = response.data.data.status;
+        message.value = "Отчёт создаётся...";
+        generateReport(response.data.data.report_id);
     }
-
-    generateReport(response.data.data.report_id);
   } catch (error) {
 
     if(error?.response?.status == 422){
@@ -127,17 +126,25 @@ const showMessage = (text, type) => {
 const generateReport = async (reportId) => {
   try {
     const eventSource = new EventSource(`/api/report-events?report_id=${reportId}`);
+    let downloadTriggered = false;
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-      if (data.status === 'closed') {
+      if (data.status === 'closed' && !downloadTriggered) {
+        downloadTriggered = true;
         eventSource.close();
         message.value = '';
 
+        // Автоматически скачиваем файл
+        const link = document.createElement('a');
+        link.href = `/api/download-report/${reportId}`;
+        link.click();
+
         showSuccess.value = true;
-        successMessage.value = "Отчёт создан!";
+        successMessage.value = "Отчёт создан и скачан!";
         successTitle.value = "Создание отчёта";
+        hideForm();
 
       } else if (data.status === 'failed'){
         eventSource.close();
@@ -147,22 +154,21 @@ const generateReport = async (reportId) => {
         errorMessage.value = "Ошибка при создании отчёта";
         title.value = "Создание отчёта";
       }
-    }
+    };
 
     eventSource.onerror = () => {
       eventSource.close();
-
       showError.value = true;
       errorMessage.value = "Ошибка соединения";
       title.value = "Создание отчёта";
-    }
+    };
 
   } catch (error) {
     showError.value = true;
     errorMessage.value = "Ошибка на стороне сервера";
     title.value = "Создание отчёта";
   }
-}
+};
 
 </script>
 

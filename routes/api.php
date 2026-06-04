@@ -60,16 +60,31 @@ Route::get('/report-events', function (Request $request) {
     Route::post('/report-callback', function (Request $request) {
         $report_id = $request->input('report_id');
         $status = $request->input('status');
+        $file_path = $request->input('file_path'); // получаем путь к файлу
 
-        if ($status === 'failed') {
-            Cache::put("report_status_{$report_id}", "failed", 3600);
-        } else {
-            Cache::put("report_status_{$report_id}", "closed", 3600);
-        }
-
+        Cache::put("report_status_{$report_id}", [
+            'status' => $status,
+            'file_path' => $file_path
+        ], 3600);
 
         return response()->json(["success" => $status]);
     });
+
+    Route::get('/download-report/{report_id}', function ($report_id) {
+    $reportData = Cache::get("report_status_{$report_id}");
+
+    if (!$reportData || $reportData['status'] !== 'closed') {
+        return response()->json(['error' => 'Report not ready'], 404);
+    }
+
+    $file_path = $reportData['file_path'];
+
+    if (!file_exists($file_path)) {
+        return response()->json(['error' => 'File not found'], 404);
+    }
+
+    return response()->download($file_path)->deleteFileAfterSend(true);
+})->middleware('auth:sanctum');
 
 
     Route::get('/photo-events', function (Request $request) {

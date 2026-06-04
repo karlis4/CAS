@@ -36,7 +36,7 @@ class CustomResetPassword extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         // Ваша кастомная ссылка
-        $url = 'http://109.196.164.135/reset-password?token=' . $this->token . '&email=' . $notifiable->email;
+        $url = 'http://localhost:8080/reset-password?token=' . $this->token . '&email=' . $notifiable->email;
 
         return (new MailMessage)
             ->subject('Сброс пароля')
