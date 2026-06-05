@@ -22,7 +22,6 @@ class RustCreateCamerasExcelFileService extends Controller
     {
         $validated = $request->validate([
             'fileName' => 'required',
-            'fullFilePath' => 'required',
             'callback_url' => 'required|string',
             'cameras' => 'required|array',
             'cameras.*.real_camera_id' => 'required|string',
@@ -46,7 +45,7 @@ class RustCreateCamerasExcelFileService extends Controller
         'cameras' => $validated['cameras'],
         'file_info' => [
             'file_name' => $validated['fileName'],
-            'full_file_path' => $validated['fullFilePath']
+            'full_file_path' => '/var/www/reports/'
         ],
         'callback_url' => $validated['callback_url']
     ]);
