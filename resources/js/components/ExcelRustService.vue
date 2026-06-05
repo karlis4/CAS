@@ -65,7 +65,7 @@ const generateExcel = async () => {
         const response = await axios.post('/api/rust-excel', {
             cameras: sendedCameras,
             fileName: fileName.value,
-            callback_url: 'http://localhost:8080/api/report-callback'
+            callback_url: 'http://109.196.164.135/api/report-callback'
         });
 
         if (response.data.success) {
