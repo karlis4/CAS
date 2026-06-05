@@ -75,20 +75,20 @@ Route::get('/report-events', function (Request $request) {
     });
 
     Route::get('/download-report/{report_id}', function ($report_id) {
-    $reportData = Cache::get("report_status_{$report_id}");
+        $reportData = Cache::get("report_status_{$report_id}");
 
-    if (!$reportData || $reportData['status'] !== 'closed') {
-        return response()->json(['error' => 'Report not ready'], 404);
-    }
+        if (!$reportData || $reportData['status'] !== 'closed') {
+            return response()->json(['error' => 'Report not ready'], 404);
+        }
 
-    $file_path = $reportData['file_path'];
+        $file_path = $reportData['file_path'];
 
-    if (!file_exists($file_path)) {
-        return response()->json(['error' => 'File not found'], 404);
-    }
+        if (!file_exists($file_path)) {
+            return response()->json(['error' => 'File not found'], 404);
+        }
 
-    return response()->download($file_path)->deleteFileAfterSend(true);
-})->middleware('auth:sanctum');
+        return response()->download($file_path)->deleteFileAfterSend(true);
+    });
 
 
     Route::get('/photo-events', function (Request $request) {
