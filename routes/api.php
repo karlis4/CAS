@@ -31,31 +31,35 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/report-events', function (Request $request) {
-        return response()->stream(function () use ($request) {
-            $report_id = $request->input('report_id');
+    return response()->stream(function () use ($request) {
+        $report_id = $request->input('report_id');
 
-            while (true) {
-                $status = Cache::get("report_status_{$report_id}", "pending");
+        while (true) {
+            $cached = Cache::get("report_status_{$report_id}", ['status' => 'pending']);
 
-                echo "data: " . json_encode([
-                    'status' => $status
-                ]) . "\n\n";
+            $status = is_array($cached) ? $cached['status'] : $cached;
+            $file_path = is_array($cached) ? ($cached['file_path'] ?? null) : null;
 
-                ob_flush();
-                flush();
+            echo "data: " . json_encode([
+                'status' => $status,
+                'file_path' => $file_path
+            ]) . "\n\n";
 
-                if ($status === 'closed' || $status === 'failed') {
-                    break;
-                }
+            ob_flush();
+            flush();
 
-                sleep(2);
+            if ($status === 'closed' || $status === 'failed') {
+                break;
             }
-        }, 200, [
-            'Content-Type' => 'text/event-stream',
-            'Cache-Control' => 'no-cache',
-            'X-Accel-Buffering' => 'no',
-        ]);
-    });
+
+            sleep(2);
+        }
+    }, 200, [
+        'Content-Type' => 'text/event-stream',
+        'Cache-Control' => 'no-cache',
+        'X-Accel-Buffering' => 'no',
+    ]);
+});
 
     Route::post('/report-callback', function (Request $request) {
         $report_id = $request->input('report_id');

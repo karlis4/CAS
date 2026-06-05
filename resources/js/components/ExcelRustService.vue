@@ -96,8 +96,10 @@ const generateReport = async (reportId) => {
 
         eventSource.onmessage = (event) => {
             const data = JSON.parse(event.data);
-
+            console.log('EventSource data:', data);  // <-- добавить
+            console.log('Status:', data.status);      // <-- добавить
             if (data.status === 'closed' && !downloadTriggered) {
+                console.log('Download triggered!');
                 downloadTriggered = true;
                 eventSource.close();
                 message.value = '';
