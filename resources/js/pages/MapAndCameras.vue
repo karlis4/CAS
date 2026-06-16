@@ -469,7 +469,7 @@ function cleanup() {
                                 <input type="text" name="inventNum" v-model="createdMarker.inventNumber"></input>
                             </li>
                         </ul>
-                        <button class="cancelButton" @click.stop="hideForm">Отмена</button><button
+                        <button type="button" class="cancelButton" @click.stop="hideForm">Отмена</button><button
                             class="addButton">Добавить</button>
                     </div>
                 </div>
