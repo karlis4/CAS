@@ -40,7 +40,7 @@ const sendResetLink = async () => {
     showOpacityWindow.value = false;
     showLoader.value = false;
 
-    const message = error.response?.data?.message || 'Ошибка отправки'
+    const message = "Неправлильный формат почты или пользователя не существует"
     showError.value = true;
     errorMessage.value = message;
     title.value = 'Смена пароля';
