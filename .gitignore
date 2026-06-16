@@ -22,5 +22,5 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-/app/Notifications
+app/Notifications/
 /config/app.php
